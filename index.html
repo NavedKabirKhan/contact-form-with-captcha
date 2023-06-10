@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contact Form with CAPTCHA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .contact-form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .form-group input[type="text"],
+    .form-group textarea {
+      width: 100%;
+      padding: 5px;
+    }
+
+    .captcha-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .captcha-image {
+      margin-right: 10px;
+    }
+
+    .captcha-refresh {
+      cursor: pointer;
+    }
+
+    .form-group input[type="submit"] {
+      padding: 5px 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Contact Form with CAPTCHA</h1>
+  <div class="contact-form">
+    <form id="contact-form">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      <div class="captcha-container">
+        <img src="" id="captcha-image" alt="CAPTCHA">
+        <span class="captcha-refresh" id="captcha-refresh">&#8635;</span>
+      </div>
+      <div class="form-group">
+        <label for="captcha">Enter CAPTCHA:</label>
+        <input type="text" id="captcha" name="captcha" required>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Submit">
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Mock captcha verification function
+    function verifyCaptcha(captchaValue) {
+      const captcha = "ABC123"; // Example captcha value
+
+      return captchaValue.toUpperCase() === captcha.toUpperCase();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const captchaImage = document.getElementById("captcha-image");
+      const captchaRefresh = document.getElementById("captcha-refresh");
+      const contactForm = document.getElementById("contact-form");
+
+      // Generate and display a new CAPTCHA
+      function generateCaptcha() {
+        const captcha = generateRandomCaptcha();
+        captchaImage.src = "https://via.placeholder.com/150?text=" + captcha; // Replace with your own CAPTCHA image source
+      }
+
+      // Generate a random CAPTCHA string
+      function generateRandomCaptcha() {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+        let captcha = "";
+
+        for (let i = 0; i < 6; i++) {
+          const randomIndex = Math.floor(Math.random() * chars.length);
+          captcha += chars[randomIndex];
+        }
+
+        return captcha;
+      }
+
+      // Refresh CAPTCHA when the refresh button is clicked
+      captchaRefresh.addEventListener("click", function() {
+        generateCaptcha();
+      });
+
+      // Handle form submission
+      contactForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const captchaInput = document.getElementById("captcha");
+        const captchaValue = captchaInput.value;
+
+        if (verifyCaptcha(captchaValue)) {
+          // CAPTCHA verification passed
+          // You can proceed with form submission or other actions here
+          alert("CAPTCHA verification passed. Form submitted successfully!");
+          contactForm.reset(); // Reset the form
+          generateCaptcha(); // Generate a new CAPTCHA
+        } else {
+          // CAPTCHA verification failed
+          alert("CAPTCHA verification failed. Please try again.");
+          captchaInput.value = ""; // Clear the CAPTCHA input field
+          generateCaptcha(); // Generate a new CAPTCHA
+        }
+      });
+
+      // Generate initial CAPTCHA
+      generateCaptcha();
+    });
+  </script>
+</body>
+</html>
